@@ -61,12 +61,31 @@ def product_app(id):
 @app.route('/api/v1/apps/',methods=['GET'])
 @cross_origin()
 @auth_login_required
-def apps_list():
+def apps_listall():
     '''
        查询所有应用信息
     '''
     if request.method == 'GET':
-        data = [ {'appname':i.app_name,'appnote':i.app_note,'asset':[ ass.system_ip for ass in i.app_asset]} for i in application.query.all() ]
+        data = [ {'app_id':i.app_id,'appname':i.app_name,'appnote':i.app_note,'asset':[ ass.system_ip for ass in i.app_asset]} for i in application.query.all() ]
+        return task.json_message_200(data), 200
+
+
+@app.route('/api/v1/apps/<int:id>',methods=['GET'])
+@cross_origin()
+@auth_login_required
+def apps_list(id):
+    '''
+       查询某个应用信息
+       {"info": "", "message": "OK", "result": {"appname": "test", "appnote": "test", "app_product": "", "asset": []}, "status": "200"}
+    '''
+    if request.method == 'GET':
+        i = application.query.filter_by(app_id=id).first()
+        #product =  {i.app_product.product_name:i.app_product.product_id}
+        if i.appproduct:
+            product = {i.appproduct.product_name:i.app_product}
+        else:
+            product = ""
+        data = {'app_id':i.app_id,'app_name':i.app_name,'app_note':i.app_note,'app_product':product,'asset':[ ass.system_ip for ass in i.app_asset]}
         return task.json_message_200(data), 200
 
 
