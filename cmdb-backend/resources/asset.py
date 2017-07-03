@@ -143,7 +143,8 @@ def asset(id):
                  "models":asset.models,
                  "father_ip":asset.father_ip,
                  "create_time":asset.create_time,
-                 "guarantee_date":asset.guarantee_date}
+                 "guarantee_date":asset.guarantee_date }
+
 
             return task.json_message_200(data), 200
         else:
@@ -210,9 +211,11 @@ def del_asset(id):
                 , 'idc_id': host.idc_id
                 , 'system_swap': host.system_swap
                 , 'guarantee_date': host.guarantee_date
-                , 'offline_time': datetime.now()}
+                , 'offline_time': datetime.now()
+                , "app_name": [i.app_name for i in host.cmdb_application.all()] if host.models == 'app' else host.models
+                }
             #montior_stop(host.System_Ip)
-            dbdel(asset,host_id=id)
+            dbdel(Asset,host_id=id)
             db.session.add(Asset_offline(**data))
             db.session.commit()
             #for i   in dir(host):
@@ -221,6 +224,72 @@ def del_asset(id):
             return task.json_message_200('Sucess'), 200
         else:
             return task.json_message_404(),404
+
+
+@app.route('/api/v1/recycle/',methods=['GET'])
+@cross_origin()
+@auth_login_required
+def asset_recycle():
+    '''
+       查询所有移除至回收表服务器信息
+    '''
+    if request.method == 'GET':
+        data =[ {'host_id':asset.host_id,'system_ip':asset.system_ip,'system_hostname':asset.system_hostname,'idc':asset.idc_id,'device_type':asset.device_type} for asset in Asset_offline.query.all()  ]
+        return task.json_message_200(data), 200
+
+
+@app.route('/api/v1/recycle/<int:id>',methods=['GET'])
+@cross_origin()
+@auth_login_required
+def asset_recycleid(id):
+    '''
+       查询移除至回收表的单台服务器信息
+    '''
+    if request.method == 'GET':
+        host = Asset_offline.query.filter_by(host_id=id).first()
+        if host:
+            data = {'idrac_user': host.idrac_user
+                , 'logical_cpu_cores': host.logical_cpu_cores
+                , 'idrac_userpass': host.idrac_userpass
+                , 'system_version': host.system_version
+                , 'idc_un': host.idc_un
+                , 'father_ip': host.father_ip
+                , 'models': host.models
+                , 'system_note': host.system_note
+                , 'device_model': host.device_model
+                , 'hard_disk': host.hard_disk
+                , 'create_time': host.create_time
+                , 'father_id': host.father_id
+                , 'device_type': host.device_type
+                , 'ethernet_interface': host.ethernet_interface
+                , 'physical_memory': host.physical_memory
+                #, 'metadata': host.metadata
+                , 'idc_cabinet': host.idc_cabinet
+                , 'system_network_card': host.system_network_card
+                , 'system_hostname': host.system_hostname
+                , 'system_status': host.system_status
+                , 'memory_slots_number': host.memory_slots_number
+                , 'system_userpass': host.system_userpass
+                , 'device_sn': host.device_sn
+                , 'physical_cpu_cores': host.physical_cpu_cores
+                , 'physical_cpu_model': host.physical_cpu_model
+                , 'system_mac': host.system_mac
+                , 'system_ip': host.system_ip
+                , 'group_id': host.group_id
+                , 'system_user': host.system_user
+                , 'system_kernel': host.system_kernel
+                , 'idrac_ip': host.idrac_ip
+                , 'idc_id': host.idc_id
+                , 'system_swap': host.system_swap
+                , 'guarantee_date': host.guarantee_date
+                , 'offline_time': host.offline_time.strftime("%Y%m%d")   #此处返回的是时间datetime.datetime(2017, 6, 29, 10, 9, 14).strftime("%Y%m%d")
+                , "app_name": host.app_name
+                }
+            print(data)
+            return task.json_message_200(data), 200
+        else:
+            return task.json_message_500(), 500
+
 
 
 @app.route('/api/v1/assetmodels/<models>',methods=['GET'])
