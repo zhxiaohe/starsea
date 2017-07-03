@@ -27,7 +27,8 @@ def menu():
              'id':'asset',
              'submenu':[
                  {'submenu_name':'physical','submenu_url':'physic','id':'physic'},
-             	{'submenu_name':'vm','submenu_url':'asset','id':'vm'},
+             	 {'submenu_name':'vm','submenu_url':'asset','id':'vm'},
+                 {'submenu_name':'recycle','submenu_url':'recycle','id':'recycle'},
              	]
              },
              {'menu':'application',
@@ -36,7 +37,7 @@ def menu():
             'id': 'appli',
              'submenu':[
                  {'submenu_name':'product','submenu_url':'product'},
-             	{'submenu_name':'appcation','submenu_url':'app'},
+             	 {'submenu_name':'appcation','submenu_url':'app'},
              	]
              }
         ]}
