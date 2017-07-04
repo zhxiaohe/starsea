@@ -1,0 +1,497 @@
+{% extends "layout.html" %}
+<!DOCTYPE html>
+<html>
+
+{% block head %}
+    {{super()}}
+{% endblock %}
+
+<body class="sticky-header">
+<section>
+{% block bodylife %}
+    {{super()}}
+{% endblock %}
+
+<div class="main-content" >
+{% block bodyheader %}
+    {{super()}}
+{% endblock %}
+
+{% block pagehead %}
+    {{super()}}
+    <div class="page-heading">
+
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">产品应用管理</a>
+                </li>
+                <li class="active"> 应用管理 </li>
+            </ul>
+
+    </div>
+{% endblock %}
+
+
+{% block page %}
+        <!--body wrapper start-->
+        <div class="wrapper">
+            <div class="row">
+                <div class="col-md-12">
+
+                <section class="panel">
+                    <header class="panel-heading">
+                            应用管理
+                            <span class="tools pull-right">
+                                <a class="fa fa-chevron-down" href="javascript:;"></a>
+                                <a class="fa fa-times" href="javascript:;"></a>
+                            </span>
+                    </header>
+                    <div class="panel-body">
+                        <button class="btn btn-success" type="button" id="newinput"  data-toggle='modal'  data-target='#mynewinput' onclick="javascript:newinput();">新增</button>
+                        <table id="table" data-toggle="table" data-toolbar="#newinput" ></table>
+                    </div>
+                </section>
+
+                </div>
+
+            </div>
+        </div>
+        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="mynewinput" class="modal fade">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button" id="checkx">×</button>
+                        <h4 class="modal-title">新增应用</h4>
+                    </div>
+
+
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form" id="appadd">
+
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">应用名称</label>
+                                 <div class="col-sm-10">
+                                     <input type="text" class="form-control tooltips" data-trigger="hover" data-toggle="tooltip" title="" placeholder="Hover me" data-original-title="Tooltip goes here" name="app_name">
+                                 </div>
+                            </div>
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">应用描述</label>
+                                 <div class="col-sm-10">
+                                     <input type="text" class="form-control tooltips" data-trigger="hover" data-toggle="tooltip" title="" placeholder="Hover me" data-original-title="Tooltip goes here" name="app_note">
+                                 </div>
+                            </div>
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">负责人</label>
+                                 <div class="col-sm-10">
+                                     <input type="text" class="form-control tooltips" data-trigger="hover" data-toggle="tooltip" title="" placeholder="Hover me" data-original-title="Tooltip goes here" name="app_user">
+                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">产品线</label>
+                                 <div class="col-sm-10">
+                                     <select class="form-control" name="app_product" id="app_productid" >
+                                     </select>
+                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 col-sm-2 control-label">绑定应用ip</label>
+                                <div class="col-md-7">
+                                     <select class="multiple" multiple="multiple" id="my-select" name="app_asset">
+
+                                     </select>
+                                </div>
+                            </div>
+
+
+                       </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class='btn btn-success' onclick='javascript:addapps();' type='button'>Ok</button>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="mymodify" class="modal fade">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button" id="checkx">×</button>
+                        <h4 class="modal-title">应用信息</h4>
+                    </div>
+
+
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form" id="appmodify">
+
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">应用名称</label>
+                                 <div class="col-sm-10">
+                                     <input type="text" class="form-control tooltips" data-trigger="hover" data-toggle="tooltip"   data-original-title="Tooltip goes here" id="mapp_name" name="app_name">
+                                 </div>
+                            </div>
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">应用描述</label>
+                                 <div class="col-sm-10">
+                                     <input type="text" class="form-control tooltips" data-trigger="hover" data-toggle="tooltip"   data-original-title="Tooltip goes here" id="mapp_note" name="app_note">
+                                 </div>
+                            </div>
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">负责人</label>
+                                 <div class="col-sm-10">
+                                     <input type="text" class="form-control tooltips" data-trigger="hover" data-toggle="tooltip"   data-original-title="Tooltip goes here" id="mapp_user" name="app_user">
+                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">产品线</label>
+                                 <div class="col-sm-10">
+                                     <select class="form-control" name="app_product" id="mapp_productid" >
+                                     </select>
+                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 col-sm-2 control-label">绑定应用ip</label>
+                                <div class="col-md-7">
+                                     <select class="multiple" multiple="multiple" id="my-select" name="mapp_asset">
+
+                                     </select>
+                                </div>
+                            </div>
+
+
+                       </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class='btn btn-success' onclick='javascript:addapps();' type='button'>Ok</button>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+        <!--body wrapper end-->
+{% endblock %}
+
+{% block footer %}
+    {{super() }}
+{% endblock %}
+
+
+</div>
+{% block js %}
+    {{super()}}
+
+
+    <link rel="stylesheet" href="/static/bootstrap/src/bootstrap-table.css">
+    <!--link rel="stylesheet" href="/static/js/jquery-multi-select/css/multi-select.css" type="text/css"/-->
+    <link href="/static/multi-select/css/multi-select.css" media="screen" rel="stylesheet" type="text/css">
+
+
+    <script src="/static/bootstrap/src/bootstrap-table.js"></script>
+    <-- put your locale files after bootstrap-table.js -->
+    <script src="/static/bootstrap/src/locale/bootstrap-table-zh-CN.js"></script>
+
+
+    <!--script src="/static/js/jquery-multi-select/js/jquery.multi-select.js"></--script>
+    <script src="/static/js/multi-select-init.js"></script-->
+    <script src="/static/js/jquery-multi-select/js/jquery.quicksearch.js"></script>
+    <script src="/static/multi-select/js/jquery.multi-select.js"></script>
+
+    <script>
+        //获取表格行id信息,生成按钮
+        function formatter_det(value,rowData,rowIndex){
+             var id = rowData['app_id']
+             return "<input button  type='button' class='btn  btn-success xx' name='"+id+"' data-toggle='modal' value='详细' onclick='javascript:appmodify("+id+");'  data-target='#mymodify' > <button class='btn btn-info' onclick='javascript:removehost("+id+");' type='button'>删除</button>";
+        }
+    </script>
+
+    <script>
+
+        if (checkcookie()){
+            //获取所有应用信息,或产品线对应的应用信息
+            //通过url查询所有应用或者产品线对应应用组   http://xxx.com  or http://xxx.com/?appid=1
+             var auth = $.cookie('pgv');
+             //var producturl;
+             var url = location.search;
+
+             if (url){
+                 pid =url.split('=')[1]
+                 producturl =  backendurl+'/api/v1/product/'+pid
+             }else {
+                 producturl =  backendurl+'/api/v1/apps/'
+             }
+
+             $.ajax({
+                 headers: {
+                     "Authorization" :auth,
+                  },
+                 //beforeSend: function (xhr) {
+                 //xhr.setRequestHeader ("Authorization", "Basic " + 'xxx');
+                 //},
+                 type: "GET",
+                 url:producturl,
+                 async: false,
+                 //crossOrigin: true,
+                 error: function(XMLHttpRequest, textStatus, errorThrown) {
+                     //alert(XMLHttpRequest.status);
+                     //alert(XMLHttpRequest.readyState);
+                     alert(textStatus);
+                     alert(errorThrown);
+                     //alert('please check  user role!!')
+
+                 },
+                 success: function(data) {
+                     if (data['status'] == 200 ){
+
+                         $('#table').bootstrapTable({
+                             search: true,
+                             pagination: true,
+                             sidePagination:'client',
+                             pageList:"[10, 15, 25, 50, 100, 200]",
+                             columns: [{
+                                 field: 'appname',
+                                 title: '应用名称'
+                             }, {
+                                 field: 'appnote',
+                                 title: '应用描述'
+                             }, {
+                                 field: 'asset',
+                                 title: '主机'},
+                             {
+                                 title: '更多',
+                                 clickToSelect: true,
+                                 events: 'operateEvents',
+                                 formatter :formatter_det,
+                             }],
+                             data:data['result'],
+                         });
+                     }
+                 }
+
+             })
+
+        } else {
+               alert('please login!')
+               window.location.href=fronturl+'/login'
+        }
+
+    </script>
+
+    <script>
+        function getproduct_host() {
+            var result;
+        //获取产品和可用IP信息
+            if (checkcookie()) {
+                var auth = $.cookie('pgv');
+                //var url = location.href;
+                $.ajax({
+                    headers: {
+                        "Authorization": auth,
+                    },
+                    type: "GET",
+                    url: backendurl + '/api/v1/product_host/',
+                    async: false,
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert(textStatus);
+                        alert(errorThrown);
+                    },
+                    success: function (data) {
+                        if (data['status'] == 200) {
+                            result = data['result']
+
+                        }
+                    }
+                })
+            }   else {
+                    alert('please login!')
+                    window.location.href=fronturl+'/login'
+            }
+            return result;
+        }
+
+    </script>
+
+
+    <script>
+        function newinput(){
+            //获取产品线与主机信息,并插入
+            var product_host = getproduct_host()
+            var product = product_host['product']
+            var ip = product_host['ip']
+            $('#app_productid').empty();
+                for (pid in product){
+                    $('#app_productid').append('<option value="'+ product[pid] +'">'+ pid +'</option>');//$('#my-select').multiSelect('addOption', { value: data[ip], text: ip});
+                }
+                for (host in ip){
+                    $('#my-select').multiSelect('addOption', { value: ip[host], text: host});
+                }
+             }
+    </script>
+
+
+    <script>
+        function addapps() {
+            //获取auth
+            var auth = $.cookie('pgv');
+            //新增应用获取form信息生成json
+            var formdata = $('#appadd').serialize();
+            var strs=[];
+            strs = formdata.split('&');
+            var args = {};
+            var appass= [];
+            for ( i in strs ){
+                var data = [];
+                data = strs[i].split('=');
+                if ( data[0] != 'app_asset'  ){
+                    args[data[0]] = decodeURI(data[1])
+                }else {
+                    appass.push(data[1])
+                    args[data[0]] = appass
+                }
+            }
+            //console.log((args['app_asset']))
+
+            dd = JSON.stringify(args)
+            //alert(dd)
+            $.ajax({
+                headers: {
+                     "Authorization" :auth,
+                  },
+                //cache: true,
+                type: "POST",
+                contentType: "application/json ; charset=utf-8",
+                dataType: "JSON",
+                url: backendurl+'/api/v1/apps/',
+                //url: "/",
+                //data: "{\"app_name\":\"a\",\"app_note\":\"a\"}",
+                data: dd,
+                async: false,
+                error: function(request) {
+                    alert("Connection error");
+                },
+                success: function(data) {
+                    if (data['status'] == 200 ) {
+                        alert(data['info'])
+                        $('#table').bootstrapTable('prepend', data['result']);
+                        $('#checkx').trigger("click");
+                    }
+
+                    //$("#commonLayout_appcreshi").parent().html(data);
+                }
+            });
+            }
+    </script>
+
+    <script>
+        function appmodify(id) {
+            //获取应用信息并且可修改
+            if (checkcookie()) {
+                //获取auth
+                var auth = $.cookie('pgv');
+                $.ajax({
+                    headers: {
+                        "Authorization": auth,
+                    },
+                    type: "GET",
+                    url: backendurl+'/api/v1/apps/'+id,
+                    async: false,
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert(textStatus);
+                        alert(errorThrown);
+                    },
+                    success: function (data) {
+                        if (data['status'] == 200) {
+                            $("#mapp_name").val(data['result']['app_name'])
+                            $("#mapp_note").val(data['result']['app_note'])
+                            $("#mapp_user").val(data['result']['app_user'])
+                            var product_host = getproduct_host() //获取可用ip和产品线信息
+                            var product = product_host['product']
+                            var ip = product_host['ip']
+                            if (data['result']['app_product']){
+                                $('#mapp_productid').empty();
+                                $('#app_productid').append('<option value="'+ data['result']['app_product'] +'">'+ data['result']['app_product'] +'</option>');
+                                for (pid in product){
+                                    $('#app_productid').append('<option value="'+ product[pid] +'">'+ pid +'</option>');
+                                }
+                            }else{
+                                $('#mapp_productid').empty();
+                                $('#app_productid').append('<option value="">无</option>');
+                                for (pid in product){
+                                    $('#app_productid').append('<option value="'+ product[pid] +'">'+ pid +'</option>');//$('#my-select').multiSelect('addOption', { value: data[ip], text: ip});
+                                }
+
+                            }
+
+                        }
+                    }
+                })
+            }else {
+               alert('please login!')
+               window.location.href=fronturl+'/login'
+            }
+        }
+    </script>
+
+    <script>
+    $('#my-select').multiSelect({
+        selectableHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
+        selectionHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
+        afterInit: function (ms) {
+             var that = this,
+                 $selectableSearch = that.$selectableUl.prev(),
+                 $selectionSearch = that.$selectionUl.prev(),
+                 selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
+                 selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
+
+             that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+                 .on('keydown', function (e) {
+                     if (e.which === 40) {
+                         that.$selectableUl.focus();
+                         return false;
+                     }
+                 });
+
+             that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+                 .on('keydown', function (e) {
+                     if (e.which == 40) {
+                         that.$selectionUl.focus();
+                         return false;
+                     }
+                 });
+        },
+         afterSelect: function () {
+             this.qs1.cache();
+             this.qs2.cache();
+        },
+         afterDeselect: function () {
+             this.qs1.cache();
+             this.qs2.cache();
+         }
+     });
+
+    </script>
+
+
+
+    <script>
+    //document.getElementById("asset").setAttribute("class", "menu-list  nav-hover  nav-active")
+    $("#appli").addClass('menu-list  nav-hover  nav-active')
+     //   $( ".select2" ).select2( );
+    </script>
+{% endblock %}
+
+
+</section>
+</body>
+</html>
