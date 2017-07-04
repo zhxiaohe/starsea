@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="#" type="image/png">
+
+    <title>Login</title>
+
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="/static/css/style-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="/static/js/html5shiv.js"></script>
+    <script src="/static/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body class="login-body">
+
+<div class="container">
+
+    <form class="form-signin"   id="formdata">
+        <!--div class="form-signin-heading text-center">
+            <h1 class="sign-title">Sign In</h1>
+            <img src="/static/images/login-logo.png" alt=""/>
+        </div-->
+        <div class="login-wrap">
+            <input type="text" class="form-control" placeholder="User ID" name="username" autofocus>
+            <input type="password" class="form-control" placeholder="Password" name="password" >
+
+            <button    onclick="javascript:login();"   class="btn btn-lg btn-login btn-block" type="button">
+                <i class="fa fa-check"></i>
+            </button>
+
+            <div class="registration">
+                Not a member yet?
+                <a class="" href="registration.html">
+                    Signup
+                </a>
+            </div>
+            <label class="checkbox">
+                <input type="checkbox" value="remember-me"> Remember me
+                <span class="pull-right">
+                    <a data-toggle="modal" href="#myModal"> Forgot Password?</a>
+
+                </span>
+            </label>
+
+        </div>
+
+
+
+    </form>
+
+</div>
+
+
+
+<!-- Placed js at the end of the document so the pages load faster -->
+
+<!-- Placed js at the end of the document so the pages load faster -->
+<script src="/static/js/jquery-1.10.2.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/modernizr.min.js"></script>
+<script src="/static/jqcookie/jquery.cookie.js"></script>
+
+
+<script>
+    function setcookie(token) {
+        document.cookie="name="+token;
+    }
+
+    var backendurl = 'http://a.jinguinc.com:8000'
+    var fronturl = 'http://a.jinguinc.com:5000'
+
+</script>
+
+<script>
+    function login() {
+        var fromdata = $('#formdata').serialize()
+        $.ajax({
+            type: "POST",
+            url:backendurl+'/api/v1/login',
+            data:fromdata,
+            async: false,
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                //alert(XMLHttpRequest.status);
+                //alert(XMLHttpRequest.readyState);
+                //alert(textStatus);
+                //alert(errorThrown);
+                alert('please check  username or password !!!')
+
+            },
+            success: function(data,XMLHttpRequest) {
+                if (data['status'] == 200 ){
+                    var Days = data['timeout'];
+                    //var Days = 100;
+                    var exp = new Date();
+                    exp.setTime(exp.getTime() + Days*1000);
+                    token = data['token']
+                    //document.cookie = "token="+ token + "; expire="+exp.toGMTString();
+                    $.cookie('pgv',token,{expires:exp})
+                    window.location.href=fronturl+'/'
+                }
+            }
+
+        })
+        //window.location.href='http://127.0.0.1:5000/'
+
+    }
+</script>
+
+</body>
+</html>
