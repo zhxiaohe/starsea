@@ -1,0 +1,357 @@
+<!DOCTYPE html >
+<html lang="en">
+{% block head %}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="keywords" content="admin, dashboard, bootstrap, template, flat, modern, theme, responsive, fluid, retina, backend, html5, css, css3">
+  <meta name="description" content="">
+  <meta name="author" content="ThemeBucket">
+  <meta http-equiv="Content-Type" content="text/html;charset=gb2312" />
+  <link rel="shortcut icon" href="#" type="image/png">
+
+
+  <title>AdminX</title>
+
+  <!--icheck-->
+  <link href="/static/js/iCheck/skins/minimal/minimal.css" rel="stylesheet">
+  <link href="/static/js/iCheck/skins/square/square.css" rel="stylesheet">
+  <link href="/static/js/iCheck/skins/square/red.css" rel="stylesheet">
+  <link href="/static/js/iCheck/skins/square/blue.css" rel="stylesheet">
+
+  <!--dashboard calendar-->
+  <link href="/static/css/clndr.css" rel="stylesheet">
+
+  <!--Morris Chart CSS -->
+  <link rel="stylesheet" href="/static/js/morris-chart/morris.css">
+
+  <!--common-->
+  <link href="/static/css/style.css" rel="stylesheet">
+  <link href="/static/css/style-responsive.css" rel="stylesheet">
+
+
+
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="js/html5shiv.js"></script>
+  <script src="js/respond.min.js"></script>
+  <![endif]-->
+</head>
+{% endblock %}
+
+<body class="sticky-header">
+<section>
+{% block bodylife %}
+    <!-- left side start-->
+    <div class="left-side sticky-left-side">
+
+        <!--logo and iconic logo start-->
+        <div class="logo">
+            <a href="index.html"><img src="/static/images/starsea.png" alt=""></a>
+        </div>
+
+        <div class="logo-icon text-center">
+            <a href="index.html"><img src="/static/images/logo_icon.png" alt=""></a>
+        </div>
+        <!--logo and iconic logo end-->
+
+        <div class="left-side-inner">
+
+            <!-- visible to small devices only -->
+            <div class="visible-xs hidden-sm hidden-md hidden-lg">
+                <div class="media logged-user">
+                    <img alt="" src="/static/images/photos/user-avatar.png" class="media-object">
+                    <div class="media-body">
+
+                        <span>"Hello There..."</span>
+                    </div>
+                </div>
+
+                <h5 class="left-nav-title">Account Information</h5>
+                <ul class="nav nav-pills nav-stacked custom-nav">
+                  <li><a href="#"><i class="fa fa-user"></i> <span>Profile</span></a></li>
+                  <li><a href="#"><i class="fa fa-cog"></i> <span>Settings</span></a></li>
+                    <li><i class="fa fa-sign-out"></i> <span>Sign Out</span></li>
+                </ul>
+            </div>
+
+            <!--sidebar nav start-->
+            <ul class="nav nav-pills nav-stacked custom-nav" id="menulist">
+
+
+                    <!--li><a href="/"><i class="fa fa-bullhorn"></i> <span>Dashboard</span></a></li>
+                    <li><a href="idc"><i class="fa fa-bullhorn"></i> <span>IDC</span></a></li>
+
+                    <li id="assetid" class="menu-list"><a href=""><i class="fa fa-laptop"></i> <span>Asset</span></a>
+                    <ul class="sub-menu-list" id="xxx">
+                        <li><a href="physic">physical</a></li>
+                        <li><a href="asset">vm</a></li>
+
+                    </ul>
+                    </li>
+
+                    <li class="menu-list"><a href=""><i class="fa fa-cogs"></i> <span>application</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="product"> product</a></li>
+                        <li><a href="app"> application</a></li>
+                    </ul>
+                    </li-->
+
+
+            </ul>
+            <!--sidebar nav end-->
+
+        </div>
+    </div>
+    <!-- left side end-->
+{% endblock %}
+
+    <!-- main content start-->
+    <div class="main-content" >
+{% block bodyheader  %}
+        <!-- header section start-->
+        <div class="header-section">
+
+            <!--toggle button start-->
+            <a class="toggle-btn"><i class="fa fa-bars"></i></a>
+            <!--toggle button end-->
+
+            <!--search start>
+            <form class="searchform" action="index.html" method="post">
+                <input type="text" class="form-control" name="keyword" placeholder="Search here..." />
+            </form>
+            <search end-->
+
+            <!--notification menu start -->
+            <div class="menu-right">
+                <ul class="notification-menu">
+
+                    <li>
+                        <a href="#" class="btn btn-default dropdown-toggle info-number" data-toggle="dropdown">
+                            <i class="fa fa-bell-o"></i>
+                            <span class="badge">4</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-head pull-right">
+                            <h5 class="title">Notifications</h5>
+                            <ul class="dropdown-list normal-list">
+                                <li class="new">
+                                    <a href="">
+                                        <span class="label label-danger"><i class="fa fa-bolt"></i></span>
+                                        <span class="name">Server #31 overloaded.  </span>
+                                        <em class="small">4 hrs</em>
+                                    </a>
+                                </li>
+                                <li class="new"><a href="">See All Notifications</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <img src="/static/images/user-avatar.png" alt="" />
+                             <b id="user_name"> </b>
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
+                            <li><a href="#"><i class="fa fa-user"></i>  Profile</a></li>
+                            <li><a href="#"><i class="fa fa-cog"></i>  Settings</a></li>
+                            <li><a href="#" onclick="javascript:logout();"><i class="fa fa-sign-out"></i>Log Out</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+            <!--notification menu end -->
+
+        </div>
+        <!-- header section end-->
+{% endblock %}
+{% block pagehead %}
+        <!-- page heading start-->
+
+        <!-- page heading end-->
+{% endblock %}
+{% block page %}
+
+{% endblock %}
+{% block footer %}
+        <!--footer section start-->
+        <footer>
+            2014 &copy; AdminEx by ThemeBucket
+        </footer>
+        <!--footer section end-->
+{% endblock %}
+
+    </div>
+    <!-- main content end-->
+</section>
+
+{% block js %}
+<!-- Placed js at the end of the document so the pages load faster -->
+<script src="/static/js/jquery-1.10.2.min.js"></script>
+<script src="/static/js/jquery-ui-1.9.2.custom.min.js"></script>
+<script src="/static/js/jquery-migrate-1.2.1.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/modernizr.min.js"></script>
+<script src="/static/js/jquery.nicescroll.js"></script>
+
+<!--easy pie chart-->
+<script src="/static/js/easypiechart/jquery.easypiechart.js"></script>
+<script src="/static/js/easypiechart/easypiechart-init.js"></script>
+
+<!--Sparkline Chart-->
+<script src="/static/js/sparkline/jquery.sparkline.js"></script>
+<script src="/static/js/sparkline/sparkline-init.js"></script>
+
+<!--icheck -->
+<script src="/static/js/iCheck/jquery.icheck.js"></script>
+<script src="/static/js/icheck-init.js"></script>
+
+<!-- jQuery Flot Chart-->
+<script src="/static/js/flot-chart/jquery.flot.js"></script>
+<script src="/static/js/flot-chart/jquery.flot.tooltip.js"></script>
+<script src="/static/js/flot-chart/jquery.flot.resize.js"></script>
+
+
+<!--Morris Chart-->
+<!--script src="/static/js/morris-chart/morris.js"></script>
+<script src="/static/js/morris-chart/raphael-min.js"></script-->
+
+<!--Calendar-->
+<script src="/static/js/calendar/clndr.js"></script>
+<script src="/static/js/calendar/evnt.calendar.init.js"></script>
+<script src="/static/js/calendar/moment-2.2.1.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+
+<!--common scripts for all pages-->
+
+
+<!--Dashboard Charts-->
+<!--script src="/static/js/dashboard-chart-init.js"></script-->
+
+<!-- jqery cookie-->
+<script src="/static/jqcookie/jquery.cookie.js"></script>
+
+<!--script>
+$('#left-side-inner').dropdown('toggle');
+
+</script-->
+
+
+<script>
+var backendurl = 'http://a.jinguinc.com:8000'
+var fronturl = 'http://a.jinguinc.com:5000'
+
+</script>
+
+<script>
+     //alert($.cookie('expires'));
+     function checkcookie() {
+
+          if ($.cookie('pgv')) {
+              return true;
+          } else {
+              return false;
+              //alert('please login!')
+              //window.location.href='http://127.0.0.1:5000/login'
+          }
+     }
+</script>
+
+<script>
+    //根据用户权限动态生成导航菜单
+    if (checkcookie()) {
+        var auth = $.cookie('pgv');
+        //var url = location.href;
+        $.ajax({
+            headers: {
+                "Authorization" :auth,
+            },
+            type: "POST",
+            url: backendurl+'/api/v1/menu',
+            async: false,
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                //alert(XMLHttpRequest.status);
+                //alert(XMLHttpRequest.readyState);
+                alert(textStatus);
+                alert(errorThrown);
+                //alert('please check  user role!!')
+            },
+            success: function(data) {
+                if (data['status'] == 200 ){
+                    var username = data['result']['username']
+                    $('#user_name').append(username)
+                    var menu = data['result']['menu']
+                    //$("#menulist").append('<li class="active"><a href="index.html"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>');
+                    for (var i in menu){
+                        //判断菜单是否有子菜单,如果有需要遍历
+                        if (menu[i]['ifsubmenu'] == 'no'){
+                            var url = menu[i]['url']
+                            var menuname = menu[i]['menu']
+                            var menuid = menu[i]['id']
+                            $("#menulist").append('<li class="" id="'+menuid+'"><a href='+url+'><i class="fa fa-home"></i> <span>'+menuname+'</span></a></li>');
+                        }else{
+                            var menuname = menu[i]['menu']
+                            var menuid = menu[i]['id']
+                            var submenu = menu[i]['submenu']
+                            $("#menulist").append('<li class="menu-list" id="'+menuid+'"><a href=""><i class="fa fa-laptop"></i> <span>'+menuname+'</span></a><ul class="sub-menu-list" id='+menuname+'></ul></li>')
+                            //$("#menulist").append('<li class="menu-list"><a href=""><i class="fa fa-laptop"></i> <span>'+menuname+'</span></a><ul class="sub-menu-list" id='+menuname+'><li><a href="blank_page.html"> Blank Page</a></li><li><a href="blank_page.html"> Blank Page</a></li></ul></li>')
+                            for (var sub in submenu ){
+                                var subname = submenu[sub]['submenu_name']
+                                var suburl = submenu[sub]['submenu_url']
+                                $('#'+menuname).append('<li><a href='+suburl+'>'+subname+'</a></li>')
+                                //$('#xxx').append('<li><a href='+suburl+'>'+subname+'</a></li>')
+                            }
+
+                        }
+                    }
+
+                }
+            }
+        })
+    } else {
+               alert('please login!')
+               window.location.href=fronturl+'/login'
+    }
+
+</script>
+
+ <!--script>
+
+     $.ajax({
+         type: "POST",
+         url:'http://127.0.0.1:8000/api/v1/login',
+         data:fromdata,
+         async: false,
+         error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+             alert('please check  username or password !!!')
+
+         },
+         success: function(data,XMLHttpRequest) {
+             if (data['status'] == 200 ){
+                 var Days = data['timeout'];
+                 var exp = new Date();
+                 exp.setTime(exp.getTime() + Days*1000);
+                 token = data['token']
+                 //document.cookie = "token="+ token + "; expire="+exp.toGMTString();
+                 $.cookie('pgv',token,{expires:exp})
+                 window.location.href='http://127.0.0.1:5000/'
+             }
+         }
+     })
+
+ </script-->
+
+    <script src="/static/js/scripts.js"></script>
+
+    <script>
+       function logout(){
+           $.cookie('pgv', null);
+           window.location.href=fronturl+'/login'
+       }
+    </script>
+
+{% endblock %}
+</body>
+</html>
