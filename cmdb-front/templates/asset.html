@@ -1,0 +1,463 @@
+{% extends "layout.html" %}
+<!DOCTYPE html>
+<html>
+
+{% block head %}
+    {{super()}}
+{% endblock %}
+
+<body class="sticky-header">
+<section>
+{% block bodylife %}
+    {{super()}}
+{% endblock %}
+
+<div class="main-content" >
+{% block bodyheader %}
+    {{super()}}
+{% endblock %}
+
+{% block pagehead %}
+    {{super()}}
+    <div class="page-heading">
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">资产管理</a>
+                </li>
+                <li class="active"> 虚机管理 </li>
+            </ul>
+
+    </div>
+{% endblock %}
+
+
+{% block page %}
+        <!--body wrapper start-->
+        <div class="wrapper">
+            <div class="row">
+                <div class="col-md-12">
+
+                <section class="panel">
+                    <header class="panel-heading">
+                            VM管理
+                            <span class="tools pull-right">
+                                <a class="fa fa-chevron-down" href="javascript:;"></a>
+                                <a class="fa fa-times" href="javascript:;"></a>
+                            </span>
+                    </header>
+                    <div class="panel-body">
+                        <button class="btn btn-success" type="button" id="newinput"  data-toggle='modal'  data-target='#mynewinput'  onclick="javascript:newinput();">新增</button>
+                        <table id="table" data-toggle="table" data-toolbar="#newinput" ></table>
+                    </div>
+                </section>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal0" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                        <h4 class="modal-title">更多信息</h4>
+                    </div>
+                    <div class="modal-body">
+                        <table id="xiangxi" data-toggle="table">
+                                <thead>
+                                <tr>
+                                    <th data-field="name">Item Name</th>
+                                    <th data-field="price">Item Price</th>
+                                </tr>
+                                </thead>
+                        </table>
+                    </div>
+                    <!--div class="modal-footer">
+                        <button type="button" class="btn btn-danger"> Ok</button>
+                    </div-->
+                </div>
+            </div>
+        </div>
+
+        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog"  id="mynewinput" class="modal fade">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button" id="checkx">×</button>
+                        <h4 class="modal-title">新增服务器</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form" id="hostadd">
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">IP</label>
+                                 <div class="col-sm-10">
+                                     <input type="text" class="form-control tooltips" data-trigger="hover" data-toggle="tooltip" title=""  data-original-title="system_ip" name="system_ip">
+                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">SN</label>
+                                 <div class="col-sm-10">
+                                     <input type="text" class="form-control tooltips" data-trigger="hover" data-toggle="tooltip" title=""  data-original-title="device_sn" name="device_sn">
+                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">主机名</label>
+                                 <div class="col-sm-10">
+                                     <input type="text" class="form-control tooltips" data-trigger="hover" data-toggle="tooltip" title=""  data-original-title="system_hostname" name="system_hostname">
+                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">用户名</label>
+                                 <div class="col-sm-10">
+                                     <input type="text" class="form-control tooltips" data-trigger="hover" data-toggle="tooltip" title=""  data-original-title="system_user" name="system_user">
+                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">密码</label>
+                                 <div class="col-sm-10">
+                                     <input type="text" class="form-control tooltips" data-trigger="hover" data-toggle="tooltip" title=""  data-original-title="system_userpass" name="system_userpass">
+                                 </div>
+                            </div>
+
+                             <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">安装系统</label>
+                                 <div class="col-sm-10">
+                                     <select class="form-control" name="system_version" >
+                                         <option >centos6.8</option>
+                                         <option >centos7.x</option>
+                                     </select>
+                                 </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">宿主机</label>
+                                 <div class="col-sm-10" >
+                                     <select class="form-control select2" id="selecttwo" style="width: 100%;" name="father_ip">
+                                       <option selected="selected">Alabama</option>
+                                     </select>
+
+                                 </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">机房</label>
+                                 <div class="col-sm-10">
+                                     <select class="form-control" name="idc_id" >
+                                         <option value="YZ">亦庄</option>
+                                         <option value="Qcloud">青云</option>
+                                         <option value="JN">济南</option>
+                                     </select>
+                                 </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">服务器类型</label>
+                                 <div class="col-sm-10">
+                                     <select class="form-control" name="models"  >
+                                         <option >app</option>
+                                     </select>
+                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">设备类型</label>
+                                 <div class="col-sm-10">
+                                     <select class="form-control" name="device_type" >
+                                         <option >VM</option>
+                                     </select>
+                                 </div>
+                            </div>
+
+
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                         <button type="button" class='btn btn-success' onclick='javascript:addhost();' type='button'>Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--body wrapper end-->
+{% endblock %}
+
+{% block footer %}
+    {{super() }}
+{% endblock %}
+
+
+</div>
+{% block js %}
+    {{super()}}
+
+
+    <link rel="stylesheet" href="/static/bootstrap/src/bootstrap-table.css">
+
+    <-- select2 -->
+    <link rel="stylesheet" href="/static/select2/select2.min.css">
+    <script src="/static/select2/select2.full.min.js"></script>
+
+    <-- put your locale files after bootstrap-table.js -->
+    <script src="/static/bootstrap/src/bootstrap-table.js"></script>
+    <script src="/static/bootstrap/src/locale/bootstrap-table-zh-CN.js"></script>
+
+    <script>
+        //获取表格行id信息,生成按钮
+        function formatter_det(value,rowData,rowIndex){
+             var id = rowData['host_id']
+             return "<input button  type='button' class='btn  btn-success xx' name='"+id+"' data-toggle='modal' value='详细'  data-target='#myModal0' > <button class='btn btn-info' onclick='javascript:removehost("+id+");' type='button'>删除</button>";
+        }
+    </script>
+
+    <script>
+        if (checkcookie()) {
+            function removehost(id) {
+                if (window.confirm('是否移除除当前主机?')) {
+                    var auth = $.cookie('pgv');
+                    $.ajax({
+                        headers: {
+                            "Authorization": auth,
+                        },
+                        type: 'DELETE',
+                        url: backendurl + '/api/v1/asset/' + id,
+                        error: function (data) {
+                            alert('删除失败!')
+                        },
+                        success: function (data) {
+                            alert(data['result'])
+                        },
+                    });
+                }
+            }
+        }else{
+            alert('please login!')
+            window.location.href=fronturl+'/login'
+        }
+    </script>
+
+    <script>
+
+        if (checkcookie()){
+             var auth = $.cookie('pgv');
+             //var url = location.href;
+             $.ajax({
+                 headers: {
+                     "Authorization" :auth,
+                  },
+                 //beforeSend: function (xhr) {
+                 //xhr.setRequestHeader ("Authorization", "Basic " + 'xxx');
+                 //},
+                 type: "GET",
+                 url:backendurl+'/api/v1/assetvm',
+                 async: false,
+                 //crossOrigin: true,
+                 error: function(XMLHttpRequest, textStatus, errorThrown) {
+                     //alert(XMLHttpRequest.status);
+                     //alert(XMLHttpRequest.readyState);
+                     alert(textStatus);
+                     alert(errorThrown);
+                     //alert('please check  user role!!')
+
+                 },
+                 success: function(data) {
+                     if (data['status'] == 200 ){
+
+                         $('#table').bootstrapTable({
+                             //bootstraptable 插入数据
+                             search: true,
+                             columns: [{
+                                 field: 'system_ip',
+                                 title: 'IP'
+                             }, {
+                                 field: 'system_hostname',
+                                 title: '主机名'
+                             }, {
+                                 field: 'idc',
+                                 title: 'IDC'
+                             }, {
+                                 field: 'device_type',
+                                 title: '类型'
+                             }, {
+                                 field: '',
+                                 title: '更多',
+                                 clickToSelect: true,
+                                 events: 'operateEvents',
+                                 formatter :formatter_det,
+
+                             }],
+                             data:data['result'],
+                         });
+                     }
+                 }
+
+             })
+        } else {
+               alert('please login!')
+               window.location.href=fronturl+'/login'
+        }
+
+
+
+    </script>
+
+    <script>
+    $(function(){
+        $("input:button").click(function() {
+            var id =this.name
+            var auth = $.cookie('pgv');
+            $.ajax({
+                headers:{
+                    "Authorization" :auth,
+                },
+                type:'GET',
+                url:backendurl+'/api/v1/asset/'+id,
+                error:function (data) {
+                  alert('error!')
+                },
+                success:function(data) {
+                    //var result = data['result']
+                    var result = data['result']
+                    for (value in result){
+                        $('#xiangxi').bootstrapTable('insertRow', {
+                            index: 1,
+                            row: {
+                                name: value,
+                                price: result[value]
+                            }
+                        });
+                    //for (i in result){
+                    //    $('#xiangxi').append("<tr><td>"+i+":  </td> <td>"+result[i]+"<td></tr>");
+
+                    //}
+                    }
+                }
+
+
+            });
+        });
+    });
+    </script>
+
+
+    <script>
+        //document.getElementById("asset").setAttribute("class", "menu-list  nav-hover  nav-active")
+        $("#asset").addClass('menu-list  nav-hover  nav-active')
+        //
+    </script>
+
+
+
+
+
+    <script>
+
+        function newinput(){
+            //获取设备类型为宿主机
+            if (checkcookie()){
+                  var auth = $.cookie('pgv');
+                  //var url = location.href;
+                  $(".select2").select2();  //加载select2
+                  $.ajax({
+                      headers: {
+                          "Authorization" :auth,
+                       },
+                      type: "GET",
+                      url:backendurl+'/api/v1/assetmodels/father',
+                      async: false,
+                      error: function(XMLHttpRequest, textStatus, errorThrown) {
+                          alert(textStatus);
+                          alert(errorThrown);
+                      },
+                      success: function(data) {
+                          if (data['status'] == 200 ){
+                              var hostlist = data['result']
+                              $('#selecttwo').empty()
+                              for (host in hostlist){
+                                  hostip = hostlist[host]['system_ip']
+                                  hostid = hostlist[host]['host_id']
+                                  //$('#selecttwo').append('<option  value='+hostid+'>'+hostip+'</option>')
+                                  $('#selecttwo').append('<option  value='+hostid+'>'+hostip+'</option>')
+                              }
+
+                          }
+                      }
+
+                  })
+            } else {
+                    alert('please login!')
+                    window.location.href=fronturl+'/login'
+            }
+
+        }
+    </script>
+
+
+    <script>
+        function addhost() {
+            var formdata = $('#hostadd').serialize();
+            var strs=[];
+            strs = formdata.split('&');
+            var args = {};
+            for ( i in strs ){
+                var data = [];
+                data = strs[i].split('=');
+                if (data[1]){
+                    if (data[0] == 'models') {
+                        if (data[1] == 'app') {
+                        args['application_status'] = 'free'
+
+                        }
+                    }
+                    args[data[0]] = decodeURI(data[1])
+                }
+            }
+
+            dd = JSON.stringify(args)
+            var auth = $.cookie('pgv')
+            $.ajax({
+                    headers:{
+                        "Authorization" :auth,
+                    },
+                    type: "POST",
+                    contentType: "application/json ; charset=utf-8",
+                    dataType: "JSON",
+                    url: backendurl+"/api/v1/asset/",
+                    data: dd,
+                    async: false,
+                    error: function(request) {
+                        alert("Connection error");
+                    },
+                    success: function(data) {
+                        if (data['status'] == 200 ) {
+                            alert(data['info'])
+                            $('#table').bootstrapTable('prepend', data['result']);
+                            $('#checkx').trigger("click");
+                        }
+
+                        //$('#table').bootstrapTable('prepend',data['result']);
+                        //alert(data['info'])
+                        //location.reload()
+
+                        //$("#commonLayout_appcreshi").parent().html(data);
+                    }
+            });
+
+
+        }
+
+    </script>
+
+{% endblock %}
+
+
+</section>
+</body>
+</html>
