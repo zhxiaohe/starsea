@@ -1,0 +1,262 @@
+{% extends "layout.html" %}
+<!DOCTYPE html>
+<html>
+
+{% block head %}
+    {{super()}}
+{% endblock %}
+
+<body class="sticky-header">
+<section>
+{% block bodylife %}
+    {{super()}}
+{% endblock %}
+
+<div class="main-content" >
+{% block bodyheader %}
+    {{super()}}
+{% endblock %}
+
+{% block pagehead %}
+    {{super()}}
+    <div class="page-heading">
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">产品应用管理</a>
+                </li>
+                <li class="active"> 产品管理 </li>
+            </ul>
+
+    </div>
+{% endblock %}
+
+
+{% block page %}
+        <!--body wrapper start-->
+        <div class="wrapper">
+            <div class="row">
+                <div class="col-md-12">
+
+                <section class="panel">
+                    <header class="panel-heading">
+                            产品管理
+                            <span class="tools pull-right">
+                                <a class="fa fa-chevron-down" href="javascript:;"></a>
+                                <a class="fa fa-times" href="javascript:;"></a>
+                            </span>
+                    </header>
+                    <div class="panel-body">
+                        <button class="btn btn-success" type="button" id="newinput"  data-toggle='modal'  data-target='#mynewinput' onclick="javascript:newinput();">新增</button>
+                        <table id="table" data-toggle="table" data-toolbar="#newinput" ></table>
+                    </div>
+                </section>
+
+                </div>
+
+            </div>
+        </div>
+
+
+        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="mynewinput" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button" id="checkx">×</button>
+                        <h4 class="modal-title">添加产品</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form" id="productadd">
+
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">产品名称</label>
+                                 <div class="col-sm-10">
+                                     <input type="text" class="form-control tooltips" data-trigger="hover" data-toggle="tooltip" title="" placeholder="Hover me" data-original-title="Tooltip goes here" name="product_name">
+                                 </div>
+                            </div>
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">产品描述</label>
+                                 <div class="col-sm-10">
+                                     <input type="text" class="form-control tooltips" data-trigger="hover" data-toggle="tooltip" title="" placeholder="Hover me" data-original-title="Tooltip goes here" name="product_note">
+                                 </div>
+                            </div>
+                            <div class="form-group">
+                                 <label class="col-sm-2 col-sm-2 control-label">负责人</label>
+                                 <div class="col-sm-10">
+                                     <input type="text" class="form-control tooltips" data-trigger="hover" data-toggle="tooltip" title="" placeholder="Hover me" data-original-title="Tooltip goes here" name="product_user">
+                                 </div>
+                            </div>
+
+
+                       </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class='btn btn-success' onclick='javascript:addproduct();' type='button'>Ok</button>
+                    </div>
+
+
+                    <!--div class="modal-footer">
+                        <button type="button" class="btn btn-danger"> Ok</button>
+                    </div-->
+                </div>
+            </div>
+        </div>
+        <!--body wrapper end-->
+{% endblock %}
+
+{% block footer %}
+    {{super() }}
+{% endblock %}
+
+
+</div>
+{% block js %}
+    {{super()}}
+
+
+    <link rel="stylesheet" href="/static/bootstrap/src/bootstrap-table.css">
+
+    <script src="/static/bootstrap/src/bootstrap-table.js"></script>
+    <-- put your locale files after bootstrap-table.js -->
+    <script src="/static/bootstrap/src/locale/bootstrap-table-zh-CN.js"></script>
+
+    <script>
+        //获取表格行id信息,生成按钮
+        function formatter_det(value,rowData,rowIndex){
+             var id = rowData['product_id']
+             return "<a href='/app?appid="+id+"'><button  type='button' class='btn  btn-success xx'  data-toggle='modal' >应用</button></a> <button class='btn btn-info' onclick='javascript:removehost("+id+");' type='button'>删除</button>";
+        }
+    </script>
+    <script>
+
+        if (checkcookie()){
+             var auth = $.cookie('pgv');
+             //var url = location.href;
+             $.ajax({
+                 headers: {
+                     "Authorization" :auth,
+                  },
+                 //beforeSend: function (xhr) {
+                 //xhr.setRequestHeader ("Authorization", "Basic " + 'xxx');
+                 //},
+                 type: "GET",
+                 url:backendurl+'/api/v1/product',
+                 async: false,
+                 //crossOrigin: true,
+                 error: function(XMLHttpRequest, textStatus, errorThrown) {
+                     //alert(XMLHttpRequest.status);
+                     //alert(XMLHttpRequest.readyState);
+                     alert(textStatus);
+                     alert(errorThrown);
+                     //alert('please check  user role!!')
+
+                 },
+                 success: function(data) {
+                     if (data['status'] == 200 ){
+
+                         $('#table').bootstrapTable({
+                             search: true,
+                             pagination: true,
+                             sidePagination:'client',
+                             pageList:"[10, 15, 25, 50, 100, 200]",
+                             columns: [{
+                                 field: 'product_name',
+                                 title: '产品名称'
+                             }, {
+                                 field: 'product_user',
+                                 title: '负责人'
+                             }, {
+                                 field: 'product_note',
+                                 title: '产品描述'},
+                             {
+                                 title: '更多',
+                                 clickToSelect: true,
+                                 events: 'operateEvents',
+                                 formatter :formatter_det,
+                             }],
+                             data:data['result'],
+                         });
+                     }
+                 }
+
+             })
+        } else {
+               alert('please login!')
+               window.location.href=fronturl+'/login'
+        }
+
+    </script>
+
+    <script>
+
+        function newinput(){
+            //获取产品和可以IP信息
+            if (checkcookie()){
+                    return
+             } else {
+                    alert('please login!')
+                    window.location.href=fronturl+'/login'
+             }
+
+             }
+    </script>
+
+
+    <script>
+        function addproduct() {
+            //新增产品获取form信息生成json
+            var auth = $.cookie('pgv');
+            var formdata = $('#productadd').serialize();
+            var strs=[];
+            strs = formdata.split('&');
+            var args = {};
+            for ( i in strs ){
+                var data = [];
+                data = strs[i].split('=');
+                args[data[0]] = decodeURI(data[1])
+            }
+            //console.log(args)
+
+            dd = JSON.stringify(args)
+            //alert(dd)
+            $.ajax({
+                headers: {
+                     "Authorization" :auth,
+                  },
+                //cache: true,
+                type: "POST",
+                contentType: "application/json ; charset=utf-8",
+                dataType: "JSON",
+                url: "http://a.jinguinc.com:8000/api/v1/product",
+                //url: "/",
+                //data: "{\"app_name\":\"a\",\"app_note\":\"a\"}",
+                data: dd,
+                async: false,
+                error: function(request) {
+                    alert("Connection error");
+                },
+                success: function(data) {
+                    if (data['status'] == 200 ){
+                        alert(data['info'])
+                        $('#table').bootstrapTable('prepend',data['result']);
+                        $('#checkx').trigger("click");
+                    }
+                    //location.reload()
+
+                    //$("#commonLayout_appcreshi").parent().html(data);
+                }
+            });
+            }
+    </script>
+
+    <script>
+    $("#appli").addClass('menu-list  nav-hover  nav-active')
+    </script>
+
+{% endblock %}
+
+
+</section>
+</body>
+</html>
