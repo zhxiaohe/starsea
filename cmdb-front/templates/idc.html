@@ -1,0 +1,137 @@
+{% extends "layout.html" %}
+<!DOCTYPE html>
+<html>
+
+{% block head %}
+    {{super()}}
+{% endblock %}
+
+<body class="sticky-header">
+<section>
+{% block bodylife %}
+    {{super()}}
+{% endblock %}
+
+<div class="main-content" >
+{% block bodyheader %}
+    {{super()}}
+{% endblock %}
+
+{% block pagehead %}
+    {{super()}}
+    <div class="page-heading">
+            <h3>
+                IDC管理
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#"></a>
+                </li>
+                <li class="active"> IDC管理 </li>
+            </ul>
+
+    </div>
+{% endblock %}
+
+
+{% block page %}
+        <!--body wrapper start-->
+        <div class="wrapper">
+            <div class="row">
+                <div class="col-md-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            IDC管理
+                            <span class="tools pull-right">
+                                <a class="fa fa-chevron-down" href="javascript:;"></a>
+                                <a class="fa fa-times" href="javascript:;"></a>
+                            </span>
+                        </header>
+                        <div class="panel-body">
+                            <table id="table"></table>
+                        </div>
+                    </section>
+
+                </div>
+
+            </div>
+        </div>
+        <!--body wrapper end-->
+{% endblock %}
+
+{% block footer %}
+    {{super() }}
+{% endblock %}
+
+
+</div>
+{% block js %}
+    {{super()}}
+
+
+    <link rel="stylesheet" href="/static/bootstrap/src/bootstrap-table.css">
+
+    <script src="/static/bootstrap/src/bootstrap-table.js"></script>
+    <-- put your locale files after bootstrap-table.js -->
+    <script src="/static/bootstrap/src/locale/bootstrap-table-zh-CN.js"></script>
+
+    <script>
+
+        if (checkcookie()){
+             var auth = $.cookie('pgv');
+             //var url = location.href;
+             $.ajax({
+                 headers: {
+                     "Authorization" :auth,
+                  },
+                 //beforeSend: function (xhr) {
+                 //xhr.setRequestHeader ("Authorization", "Basic " + 'xxx');
+                 //},
+                 type: "POST",
+                 url:backendurl+'/api/v1/idc',
+                 async: false,
+                 //crossOrigin: true,
+                 error: function(XMLHttpRequest, textStatus, errorThrown) {
+                     //alert(XMLHttpRequest.status);
+                     //alert(XMLHttpRequest.readyState);
+                     alert(textStatus);
+                     alert(errorThrown);
+                     //alert('please check  user role!!')
+
+                 },
+                 success: function(data) {
+                     if (data['status'] == 200 ){
+
+                         $('#table').bootstrapTable({
+                             search: true,
+                             columns: [{
+                                 field: 'idc',
+                                 title: 'IDC'
+                             }, {
+                                 field: 'address',
+                                 title: '地址'
+                             }, {
+                                 field: 'manager',
+                                 title: '联系人'}, {
+                                 field: 'contacts',
+                                 title: '联系方式'
+                             }],
+                             data:data['result'],
+                         });
+                     }
+                 }
+
+             })
+        } else {
+               alert('please login!')
+               window.location.href=fronturl+'/login'
+        }
+
+    </script>
+
+{% endblock %}
+
+
+</section>
+</body>
+</html>
