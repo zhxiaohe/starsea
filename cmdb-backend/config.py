@@ -17,7 +17,7 @@ SECRET_KEY = '\xa8H\xe4;R@pi:Mo\x92\xe4M\xa7*E\x80\n\x8d\xfav3\xd8'
 RedisHost='127.0.0.1'
 RedisPost='6000'
 
-TIMEOUT = 3600
+TIMEOUT = 7200
 
 
 
