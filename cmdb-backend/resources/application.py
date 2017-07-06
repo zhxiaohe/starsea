@@ -49,12 +49,12 @@ def product_add():
 @auth_login_required
 def product_app(id):
     '''
-       查询产品线下的应用
+        查询产品线下的应用
        { "info": "", "message": "OK", "result": [ { "appname": "JGdepository", "appnote": "backend", "asset": [ "172.16.1.5", "172.16.1.6", "172.16.1.5" ] }
     '''
     if request.method == 'GET':
         appli = App_product.query.filter_by(product_id=id).first()
-        data = [ {'appname':i.app_name,'appnote':i.app_note,'asset':[ ass.system_ip for ass in i.app_asset]} for i in appli.app_product ]
+        data = [ {'app_id':i.app_id,'appname':i.app_name,'appnote':i.app_note,'asset':[ ass.system_ip for ass in i.app_asset]} for i in appli.app_product ]
         return task.json_message_200(data), 200
 
 
@@ -64,9 +64,10 @@ def product_app(id):
 def apps_listall():
     '''
        查询所有应用信息
+
     '''
     if request.method == 'GET':
-        data = [ {'app_id':i.app_id,'appname':i.app_name,'appnote':i.app_note,'asset':[ ass.system_ip for ass in i.app_asset]} for i in application.query.all() ]
+        data = [ {'app_id':i.app_id,'appname':i.app_name,'appnote':i.app_note,'asset':[ass.system_ip for ass in i.app_asset]} for i in application.query.all() ]
         return task.json_message_200(data), 200
 
 
@@ -76,7 +77,7 @@ def apps_listall():
 def apps_list(id):
     '''
        查询某个应用信息
-       {"info": "", "message": "OK", "result": {"appname": "test", "appnote": "test", "app_product": "", "asset": []}, "status": "200"}
+       {"info": "", "message": "OK", "result": {"appname": "test", "appnote": "test", "app_product": "", "asset": {"10.88.20.3": 20}}, "status": "200"}
     '''
     if request.method == 'GET':
         i = application.query.filter_by(app_id=id).first()
@@ -85,8 +86,85 @@ def apps_list(id):
             product = {i.appproduct.product_name:i.app_product}
         else:
             product = ""
-        data = {'app_id':i.app_id,'app_name':i.app_name,'app_note':i.app_note,'app_product':product,'asset':[ ass.system_ip for ass in i.app_asset]}
+
+        data = {'app_id':i.app_id,'app_name':i.app_name,'app_note':i.app_note,'app_product':product,'asset':{ass.system_ip:ass.host_id for ass in i.app_asset}}
         return task.json_message_200(data), 200
+
+
+@app.route('/api/v1/apps/<int:id>',methods=['PUT'])
+@cross_origin()
+@auth_login_required
+def apps_update(id):
+    '''
+       更新某个应用信息
+       {"info": "", "message": "OK", "result": {"appname": "test", "appnote": "test", "app_product": "", "asset": []}, "status": "200"}
+    '''
+    if request.method == 'PUT':
+        args = request.json
+        appli = application.query.filter_by(app_id=id).first()
+
+        appli.app_name=args['app_name']
+        appli.app_note=args['app_note']
+        appli.app_user=args['app_user']
+
+        assetid = args['app_asset']
+        appproduct = args['app_product']
+        if appli.appproduct:
+            oldproduct = appli.app_product
+        else:
+            oldproduct = ""
+
+        if appproduct:
+            if not oldproduct == int(appproduct):
+                pduct = App_product.query.get(int(appproduct))
+                appli.appproduct=pduct
+                pductname = appli.app_product
+            else:
+                pductname = oldproduct
+        else:
+            pductname = oldproduct
+
+        oldasset = [ass.host_id for ass in appli.app_asset]
+        oldassetid_poor = set(oldasset) - set(assetid)
+        if oldassetid_poor:
+            for poor in oldassetid_poor:
+                host = Asset.query.get(int(poor))
+                host.application_status = 'free'
+                appli.app_asset.remove(host)
+        assetid_poor = set(assetid) - set(oldasset)
+        if assetid_poor:
+            for Assetid in assetid_poor:
+                host = Asset.query.get(int(Assetid))
+                host.application_status = 'use'
+                appli.app_asset.append(host)
+
+        db.session.add(appli)
+        db.session.commit()
+        data = {'app_id':appli.app_id,'app_name':appli.app_name,'app_note':appli.app_note,'app_product':pductname,'asset':[ ass.system_ip for ass in appli.app_asset]}
+        return task.json_message_200(data=data,info='success!'), 200\
+
+
+@app.route('/api/v1/apps/<int:id>',methods=['DELETE'])
+@cross_origin()
+@auth_login_required
+def apps_del(id):
+    '''
+       del某个应用信息，取消与asset的多对多
+    '''
+    if request.method == 'DELETE':
+        appli = application.query.filter_by(app_id=id).first()
+
+
+        oldasset = [ass.host_id for ass in appli.app_asset]
+        if oldasset:
+            for poor in oldasset:
+                host = Asset.query.get(int(poor))
+                host.application_status = 'free'
+                appli.app_asset.remove(host)
+
+        db.session.delete(appli)
+        db.session.commit()
+        return task.json_message_200(data='remove success!',info='remove success!'), 200
 
 
 @app.route('/api/v1/apps/',methods=['POST'])
@@ -96,7 +174,7 @@ def apps():
     '''
        新增应用并且绑定产品线
        {"app_name":"JGfinance","app_note":"JGfinance","app_product":1}  #productid为产品线主键
-        or
+        or新增应用并且绑定产品线并且绑定服务器
        {'app_product': '1', 'app_user': 'CFCA', 'app_note': '%E7%94%B5%E5%AD%90%E7%AD%BE%E7%AB%A0', 'app_name': 'CFCA', 'app_asset': ['3', '4']}
     '''
     if request.method == 'POST':
@@ -108,8 +186,11 @@ def apps():
         if  args['app_asset']:
             assetid = args['app_asset']
             del args['app_asset']
-            appli = App_product.query.get(int(pid))
-            data = application(**args, appproduct=appli)
+            if pid:
+                appli = App_product.query.get(int(pid))
+                data = application(**args, appproduct=appli)
+            else:
+                data = application(**args)
             for Assetid in assetid:
                 host = Asset.query.get(int(Assetid))
                 host.application_status = 'use'
