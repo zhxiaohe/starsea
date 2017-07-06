@@ -129,7 +129,8 @@
 
 
                     <div class="modal-body">
-                        <form class="form-horizontal" role="form" id="appmodify">
+                        <form class="form-horizontal" role="form" id="appmodi">
+                            <input type="hidden" id="mapp_id" name="app_id">
 
                             <div class="form-group">
                                  <label class="col-sm-2 col-sm-2 control-label">应用名称</label>
@@ -161,7 +162,7 @@
                             <div class="form-group">
                                 <label class="col-sm-2 col-sm-2 control-label">绑定应用ip</label>
                                 <div class="col-md-7">
-                                     <select class="multiple" multiple="multiple" id="my-select" name="mapp_asset">
+                                     <select class="multiple" multiple="multiple" id="m-my-select" name="app_asset">
 
                                      </select>
                                 </div>
@@ -172,7 +173,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class='btn btn-success' onclick='javascript:addapps();' type='button'>Ok</button>
+                        <button type="button" class='btn btn-success' onclick='javascript:mapps();' type='button'>Ok</button>
                     </div>
 
 
@@ -212,7 +213,7 @@
         //获取表格行id信息,生成按钮
         function formatter_det(value,rowData,rowIndex){
              var id = rowData['app_id']
-             return "<input button  type='button' class='btn  btn-success xx' name='"+id+"' data-toggle='modal' value='详细' onclick='javascript:appmodify("+id+");'  data-target='#mymodify' > <button class='btn btn-info' onclick='javascript:removehost("+id+");' type='button'>删除</button>";
+             return "<input button  type='button' class='btn  btn-success xx' name='"+id+"' data-toggle='modal' value='详细' onclick='javascript:appmodify("+id+");'  data-target='#mymodify' > <button class='btn btn-info' onclick='javascript:removeapps("+id+");' type='button'>删除</button>";
         }
     </script>
 
@@ -336,11 +337,13 @@
                 for (host in ip){
                     $('#my-select').multiSelect('addOption', { value: ip[host], text: host});
                 }
+                //$('#my-select').multiSelect('select', '22')
              }
     </script>
 
 
     <script>
+        //添加应用
         function addapps() {
             //获取auth
             var auth = $.cookie('pgv');
@@ -360,10 +363,13 @@
                     args[data[0]] = appass
                 }
             }
-            //console.log((args['app_asset']))
+            if ('app_asset' in args){
+                dd = JSON.stringify(args)
+            }else{
+                args['app_asset']=''
+                dd = JSON.stringify(args)
+            }
 
-            dd = JSON.stringify(args)
-            //alert(dd)
             $.ajax({
                 headers: {
                      "Authorization" :auth,
@@ -412,27 +418,47 @@
                     },
                     success: function (data) {
                         if (data['status'] == 200) {
+                            $("#mapp_id").val(id)
                             $("#mapp_name").val(data['result']['app_name'])
                             $("#mapp_note").val(data['result']['app_note'])
                             $("#mapp_user").val(data['result']['app_user'])
+                            var asset = data['result']['asset'] //此应用绑定host信息
                             var product_host = getproduct_host() //获取可用ip和产品线信息
                             var product = product_host['product']
                             var ip = product_host['ip']
                             if (data['result']['app_product']){
                                 $('#mapp_productid').empty();
-                                $('#app_productid').append('<option value="'+ data['result']['app_product'] +'">'+ data['result']['app_product'] +'</option>');
+                                for (k in data['result']['app_product']){
+                                    $('#mapp_productid').append('<option value="'+ data['result']['app_product'][k] +'">'+ k +'</option>');
+                                }
                                 for (pid in product){
-                                    $('#app_productid').append('<option value="'+ product[pid] +'">'+ pid +'</option>');
+                                    $('#mapp_productid').append('<option value="'+ product[pid] +'">'+ pid +'</option>');
                                 }
                             }else{
                                 $('#mapp_productid').empty();
-                                $('#app_productid').append('<option value="">无</option>');
+                                $('#mapp_productid').append('<option value="">无</option>');
                                 for (pid in product){
-                                    $('#app_productid').append('<option value="'+ product[pid] +'">'+ pid +'</option>');//$('#my-select').multiSelect('addOption', { value: data[ip], text: ip});
+                                    $('#mapp_productid').append('<option value="'+ product[pid] +'">'+ pid +'</option>');//$('#my-select').multiSelect('addOption', { value: data[ip], text: ip});
                                 }
 
                             }
 
+                            //$('#m-my-select').multiSelect('deselect_all');
+                            //$('#m-my-select').multiSelect(Clear_Select())
+                            $('#m-my-select').empty().multiSelect('refresh');
+                            for (host in ip) {
+                                $('#m-my-select').multiSelect('addOption', {
+                                    value: ip[host],
+                                    text: host,
+                                });
+                            }
+                            for (assetip in asset) {
+                                $('#m-my-select').multiSelect('addOption', {
+                                    value: asset[assetip],
+                                    text: assetip
+                                });
+                                $('#m-my-select').multiSelect('select', asset[assetip].toString())
+                            }
                         }
                     }
                 })
@@ -441,10 +467,92 @@
                window.location.href=fronturl+'/login'
             }
         }
+
+        //修改应用
+        function mapps() {
+            //获取auth
+            var auth = $.cookie('pgv');
+            //新增应用获取form信息生成json
+            var formdata = $('#appmodi').serialize();
+            var strs=[];
+            strs = formdata.split('&');
+            var args = {};
+            var appass= [];
+            for ( i in strs ){
+                var data = [];
+                data = strs[i].split('=');
+                if( data[0] == 'app_id'  ){
+                    appid = data[1]
+                }else if ( data[0] != 'app_asset'  ){
+                    args[data[0]] = decodeURI(data[1])
+                } else {
+                    appass.push(data[1])
+                    args[data[0]] = appass
+                }
+            }
+            //console.log((args['app_asset']))
+            if ('app_asset' in args){
+                dd = JSON.stringify(args)
+            }else{
+                args['app_asset']=''
+                dd = JSON.stringify(args)
+            }
+
+            $.ajax({
+                headers: {
+                     "Authorization" :auth,
+                  },
+                //cache: true,
+                type: "PUT",
+                contentType: "application/json ; charset=utf-8",
+                dataType: "JSON",
+                url: backendurl+'/api/v1/apps/'+appid,
+                data: dd,
+                async: false,
+                error: function(request) {
+                    alert("Connection error");
+                },
+                success: function(data) {
+                    if (data['status'] == 200 ) {
+                        alert(data['info'])
+                        //$('#table').bootstrapTable('prepend', data['result']);
+                        $('#checkx').trigger("click");
+                    }
+
+                    //$("#commonLayout_appcreshi").parent().html(data);
+                }
+            });
+            }
+
+     //删除应用
+        if (checkcookie()) {
+            function removeapps(id) {
+                if (window.confirm('是否移除除此应用?')) {
+                    var auth = $.cookie('pgv');
+                    $.ajax({
+                        headers: {
+                            "Authorization": auth,
+                        },
+                        type: 'DELETE',
+                        url: backendurl + '/api/v1/apps/' + id,
+                        error: function (data) {
+                            alert('删除失败!')
+                        },
+                        success: function (data) {
+                            alert(data['result'])
+                        },
+                    });
+                }
+            }
+        }else{
+            alert('please login!')
+            window.location.href=fronturl+'/login'
+        }
+
     </script>
 
     <script>
-    $('#my-select').multiSelect({
+    $('.multiple').multiSelect({
         selectableHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
         selectionHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
         afterInit: function (ms) {
