@@ -34,9 +34,6 @@
 {% block pagehead %}
     {{super()}}
     <div class="page-heading">
-            <h3>
-                Dashboard
-            </h3>
             <ul class="breadcrumb">
                 <li>
                     <a href="#"></a>
@@ -52,7 +49,24 @@
         <!--body wrapper start-->
     <div class="wrapper">
         <!-- tables -->
-        <div class="col-sm-12">
+        <div class="col-xs-2">
+        <section class="panel">
+            <header class="panel-heading" style="padding-left: 0px;">
+                产品信息
+                <span class="tools pull-right">
+                    <a class="fa fa-chevron-down" href="javascript:;"></a>
+                    <a class="fa fa-times" href="javascript:;"></a>
+                </span>
+            </header>
+
+                <div class="panel-body"  style="padding-left: 0px">
+                    <ul id="product_tree" class="ztree"></ul>
+                </div>
+
+        </section>
+        </div>
+
+        <div class="col-lg-10">
         <section class="panel">
             <header class="panel-heading">
                 物理服务器管理
@@ -63,101 +77,74 @@
             </header>
 
         <!--body wrapper start-->
-        <div class="wrapper">
-            <div class="row">
+        <div class="panel-body" style="padding-left: 30px;  padding-right: 2px;">
+
 
 
            <div class="row states-info">
             <div class="col-md-2">
                 <div class="panel red-bg">
-                    <div class="panel-body">
                         <div class="row">
                             <div class="col-xs-12">
-                            <span>物理机 /空闲物理机</span>
-                            <h3 class="green-txt">aa  /  aa</h3>
+                            <span>物理机</span>
+                            <h3  id="physic"></h3>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="panel blue-bg">
-                    <div class="panel-body">
                         <div class="row">
                             <div class="col-xs-8">
                             <span>宿主机</span>
-                            <h3 class="green-txt">aa</h3>
+                            <h3 id="father"></h3>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="panel green-bg">
-                    <div class="panel-body">
                         <div class="row">
                             <div class="col-xs-8">
-                            <span>产品线</span>
-                            <h3 class="green-txt">aa</h3>
+                            <span>虚机</span>
+                            <h3 id="vm"></h3>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="panel yellow-bg">
-                    <div class="panel-body">
                         <div class="row">
                             <div class="col-xs-8">
-                            <span>虚机</span>
-                            <h3 class="green-txt">aa</h3>
+                            <span>可用虚机</span>
+                            <h3 id="vms"></h3>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="panel blue-bg">
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-xs-12">
-                            <span>沙河可创虚机</span>
-                            <h3 class="green-txt">aa</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
             <div class="col-md-2">
                 <div class="panel red-bg">
-                    <div class="panel-body">
                         <div class="row">
                             <div class="col-xs-12">
-                            <span>三元桥可创虚机</span>
-                            <h3 class="green-txt">aa</h3>
+                            <span>剩余资源</span>
+                            <h3 id="remain"></h3>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
             </div>
+        </div>
 
+        <!--body wrapper end-->
 
+        </section>
+        </div>
 
-
-
-
-                <div class="col-md-12">
+        <div class="col-md-10">
                     <!--notification start-->
                     <section class="panel">
                         <header class="panel-heading">
-                        <form id='app_form'>
-                            <div class="col-sm-2" style="padding-left: 0px">
-                                <select class="form-control m-bot15" onchange="change()" name="change_type" id="app_type">
-
-                                </select>
-                            </div>
-                        </form>
                             <span class="tools pull-right">
                                 <a class="fa fa-chevron-down" href="javascript:;"></a>
 
@@ -172,16 +159,9 @@
                         </div>
                     </section>
                     <!--notification end-->
-                </div>
-
-
-
         </div>
-        </div>
-        <!--body wrapper end-->
 
-        </section>
-        </div>
+
     </div>
         <!--body wrapper end-->
 {% endblock %}
@@ -196,6 +176,17 @@
     {{super()}}
 
 
+
+    <script src="/static/hcharts/highcharts.js"></script>
+    <!--script src="/static/hcharts/exporting.js"></script-->
+    <script src="/static/hcharts/data.js"></script>
+    <script src="/static/hcharts/drilldown.js"></script>
+    <!--script src="/static/hcharts/highcharts-zh_CN.js"></script-->
+
+    <link rel="stylesheet" href="/static/zTree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <script type="text/javascript" src="/static/zTree/js/jquery.ztree.core.js"></script>
+
+
     <link rel="stylesheet" href="/static/bootstrap/src/bootstrap-table.css">
 
     <script src="/static/bootstrap/src/bootstrap-table.js"></script>
@@ -203,56 +194,304 @@
     <script src="/static/bootstrap/src/locale/bootstrap-table-zh-CN.js"></script>
 
     <script>
+    $(function () {
+    // Create the chart
+    Highcharts.chart('container', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: '产品应用占用资源情况'
+        },
+        subtitle: {
+            text: '点击可查看具体的版本数据，数据来源: starsea.'
+        },
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: {
+            title: {
+                text: '占用资源情况一览'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.y:f}'
+                }
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}</b> of total<br/>'
+        },
+        series: [{
+            name: '产品占用资源一览',
+            colorByPoint: true,
+            data: [{
+                name: 'jlfinance',
+                y: 56,
+                drilldown: 'jlfinance'
+            }, {
+                name: 'DB',
+                y: 24,
+                drilldown: 'DB'
+            }, {
+                name: 'jlfomance_mgr',
+                y: 10,
+                drilldown: 'jlfomance_mgr'
+            }, {
+                name: 'fdfs',
+                y: 4,
+                drilldown: 'fdfs'
+            }, {
+                name: 'redis',
+                y: 1,
+                drilldown: 'redis'
+            }, {
+                name: 'nfs',
+                y: 3,
+                drilldown: null
+            }]
+        }],
+        drilldown: {
+            series: [{
+                name: 'jlfinance',
+                id: 'jlfinance',
+                data: [
+                    [
+                        'v11.0',
+                        24.13
+                    ],
+                    [
+                        'v8.0',
+                        17.2
+                    ],
+                    [
+                        'v9.0',
+                        8.11
+                    ],
+                    [
+                        'v10.0',
+                        5.33
+                    ],
+                    [
+                        'v6.0',
+                        1.06
+                    ],
+                    [
+                        'v7.0',
+                        0.5
+                    ]
+                ]
+            }, {
+                name: 'Chrome',
+                id: 'Chrome',
+                data: [
+                    [
+                        'v40.0',
+                        5
+                    ],
+                    [
+                        'v41.0',
+                        4.32
+                    ],
+                    [
+                        'v42.0',
+                        3.68
+                    ],
+                    [
+                        'v39.0',
+                        2.96
+                    ],
+                    [
+                        'v36.0',
+                        2.53
+                    ],
+                    [
+                        'v43.0',
+                        1.45
+                    ],
+                    [
+                        'v31.0',
+                        1.24
+                    ],
+                    [
+                        'v35.0',
+                        0.85
+                    ],
+                    [
+                        'v38.0',
+                        0.6
+                    ],
+                    [
+                        'v32.0',
+                        0.55
+                    ],
+                    [
+                        'v37.0',
+                        0.38
+                    ],
+                    [
+                        'v33.0',
+                        0.19
+                    ],
+                    [
+                        'v34.0',
+                        0.14
+                    ],
+                    [
+                        'v30.0',
+                        0.14
+                    ]
+                ]
+            }, {
+                name: 'Firefox',
+                id: 'Firefox',
+                data: [
+                    [
+                        'v35',
+                        2.76
+                    ],
+                    [
+                        'v36',
+                        2.32
+                    ],
+                    [
+                        'v37',
+                        2.31
+                    ],
+                    [
+                        'v34',
+                        1.27
+                    ],
+                    [
+                        'v38',
+                        1.02
+                    ],
+                    [
+                        'v31',
+                        0.33
+                    ],
+                    [
+                        'v33',
+                        0.22
+                    ],
+                    [
+                        'v32',
+                        0.15
+                    ]
+                ]
+            }, {
+                name: 'Safari',
+                id: 'Safari',
+                data: [
+                    [
+                        'v8.0',
+                        2.56
+                    ],
+                    [
+                        'v7.1',
+                        0.77
+                    ],
+                    [
+                        'v5.1',
+                        0.42
+                    ],
+                    [
+                        'v5.0',
+                        0.3
+                    ],
+                    [
+                        'v6.1',
+                        0.29
+                    ],
+                    [
+                        'v7.0',
+                        0.26
+                    ],
+                    [
+                        'v6.2',
+                        0.17
+                    ]
+                ]
+            }, {
+                name: 'fdfs',
+                id: 'fdfs',
+                data: [
+                    [
+                        'storange',
+                        2
+                    ],
+                    [
+                        'tracker',
+                        2
+                    ]
+
+                ]
+            }]
+        }
+    });
+
+    });
+
+    </script>
+
+    <script>
+    //product_tree
+        var zTreeObj;
+        // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+        var setting = {};
+        // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
 
         if (checkcookie()){
+            //树型展示产品线对应的应用信息,应用对应的IP
              var auth = $.cookie('pgv');
-             //var url = location.href;
+
+             producturl =  backendurl+'/api/v1/product/all'
+
+
              $.ajax({
                  headers: {
                      "Authorization" :auth,
                   },
-                 //beforeSend: function (xhr) {
-                 //xhr.setRequestHeader ("Authorization", "Basic " + 'xxx');
-                 //},
-                 type: "POST",
-                 url:backendurl+'/api/v1/idc',
+                 type: "GET",
+                 url:producturl,
                  async: false,
                  //crossOrigin: true,
                  error: function(XMLHttpRequest, textStatus, errorThrown) {
-                     //alert(XMLHttpRequest.status);
-                     //alert(XMLHttpRequest.readyState);
                      alert(textStatus);
                      alert(errorThrown);
-                     //alert('please check  user role!!')
 
                  },
                  success: function(data) {
                      if (data['status'] == 200 ){
+                         $(document).ready(function(){
+                             zTreeObj = $.fn.zTree.init($("#product_tree"), setting, data['result']);
+                         })
 
-                         $('#table').bootstrapTable({
-                             search: true,
-                             columns: [{
-                                 field: 'idc',
-                                 title: 'IDC'
-                             }, {
-                                 field: 'address',
-                                 title: '地址'
-                             }, {
-                                 field: 'manager',
-                                 title: '联系人'}, {
-                                 field: 'contacts',
-                                 title: '联系方式'
-                             }],
-                             data:data['result'],
-                         });
                      }
                  }
 
              })
+
         } else {
                alert('please login!')
                window.location.href=fronturl+'/login'
         }
+
+
+        $("#physic").append('30');
+        $("#father").append('15');
+        $("#vm").append('120');
+        $("#vms").append('50');
+        $("#remain").append('3');
+
 
     </script>
 
