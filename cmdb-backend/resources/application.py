@@ -58,6 +58,29 @@ def product_app(id):
         return task.json_message_200(data), 200
 
 
+@app.route('/api/v1/product/<all>',methods=['GET'])
+@cross_origin()
+@auth_login_required
+def product_all(all):
+    '''
+        all==all：
+            查询所有产品线下的应用及IP信息
+            { "info": "", "message": "OK", "result": [ { "appname": "JGdepository", "appnote": "backend", "asset": [ "172.16.1.5", "172.16.1.6", "172.16.1.5" ] }
+        all=charts:
+            highcharts 出图
+    '''
+    if request.method == 'GET':
+        if all == 'all':
+
+            #data = [ {'app_id':i.app_id,'appname':i.app_name,'appnote':i.app_note,'asset':[ ass.system_ip for ass in i.app_asset]} for i in appli.app_product ]
+            data = [ {'name':pduct.product_name,'children':[ {'name':appli.app_name, 'children':[{'name':ass.system_ip} for ass in appli.app_asset ] }  for appli in pduct.app_product]} for pduct in App_product.query.all()]
+            return task.json_message_200(data), 200
+        if all == 'charts':
+            data = [ {'name':pduct.product_name,'children':[ {'name':appli.app_name, 'children':[{'name':ass.system_ip} for ass in appli.app_asset ] }  for appli in pduct.app_product]} for pduct in App_product.query.all()]
+            return task.json_message_200(data), 200
+
+
+
 @app.route('/api/v1/apps/',methods=['GET'])
 @cross_origin()
 @auth_login_required
