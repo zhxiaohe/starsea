@@ -36,13 +36,14 @@ def auth_login_required(func):
     @wraps(func)
     def auth(*args,**kwargs):
         if not request.headers.get('Authorization'):
-            return  'error',401
+            return  'Authorization Unauthorized',401
         t = request.headers.get('Authorization')
         au = Token_Manager().verify_auth_token(token=t)
         if 401 == au:
-            return  'error1',401
+            return  'Authorization1 Unauthorized',401
         else:
             pass
         return func(*args,**kwargs)
     return auth
+
 

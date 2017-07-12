@@ -90,7 +90,7 @@ class Asset_offline(db.Model):
     device_type = db.Column(db.String(64))
     device_model = db.Column(db.String(64))
     father_id = db.Column(db.String(64))
-    system_network_Card = db.Column(db.String(164))
+    system_network_card = db.Column(db.String(164))
     system_user = db.Column(db.String(256))
     system_userpass = db.Column(db.String(256))
     idc_id = db.Column(db.String(50))
@@ -123,6 +123,8 @@ class Asset_offline(db.Model):
     create_time = db.Column(db.DateTime())
     guarantee_date = db.Column(db.String(100))
     offline_time = db.Column(db.DateTime())
+    app_name = db.Column(db.String(64))
+
 
 
 class App_product(db.Model):
@@ -142,7 +144,7 @@ class application(db.Model):
     app_version = db.Column(db.String(64))
     app_user = db.Column(db.String(64))
     app_product = db.Column(db.Integer, db.ForeignKey('cmdb_product.product_id'))
-    app_asset = db.relationship('Asset', secondary=app_host, backref='cmdb_application')
+    app_asset = db.relationship('Asset', secondary=app_host, backref=db.backref('cmdb_application', lazy='dynamic'))
 
 
 
