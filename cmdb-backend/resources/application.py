@@ -76,8 +76,26 @@ def product_all(all):
             data = [ {'name':pduct.product_name,'children':[ {'name':appli.app_name, 'children':[{'name':ass.system_ip} for ass in appli.app_asset ] }  for appli in pduct.app_product]} for pduct in App_product.query.all()]
             return task.json_message_200(data), 200
         if all == 'charts':
-            data = [ {'name':pduct.product_name,'children':[ {'name':appli.app_name, 'children':[{'name':ass.system_ip} for ass in appli.app_asset ] }  for appli in pduct.app_product]} for pduct in App_product.query.all()]
-            return task.json_message_200(data), 200
+            data = []
+            subdata = []
+            for i in App_product.query.all():
+                d = {'name': i.product_name, 'id': i.product_name}
+                d['data'] = []
+                p_asset = 0
+                for app in i.app_product:
+                    c = 0
+                    for ass in app.app_asset:
+                        c += 1
+                        p_asset += 1
+                    d['data'].append([app.app_name, c])
+                subdata.append(d)
+                data.append({'name': i.product_name, 'y': p_asset, 'drilldown': i.product_name})
+
+
+            #return task.json_message_200({'productdata':data,'drilldown':subdata}), 200
+            return task.json_message_200({'productdata':data,'drilldown':subdata}), 200
+        else:
+            return task.json_message_404(), 404
 
 
 
