@@ -4,6 +4,7 @@ from flask import Flask, request, render_template, redirect, url_for, session, g
 import hashlib
 from common.token_manage import  Token_Manager
 from functools import wraps
+from app import app
 
 
 def hashpass(src):
@@ -32,6 +33,20 @@ def login_required_forapi(func):
     return dec
 
 
+def auth_login_required1(func):
+    @wraps(func)
+    def auth(*args,**kwargs):
+        if not request.headers.get('Authorization'):
+            return  'Authorization Unauthorized',401
+        t = request.headers.get('Authorization')
+        au = Token_Manager().verify_auth_token(token=t)
+        if 401 == au:
+            return  'Authorization1 Unauthorized',401
+        else:
+            pass
+        return func(*args,**kwargs)
+    return auth
+
 def auth_login_required(func):
     @wraps(func)
     def auth(*args,**kwargs):
@@ -43,6 +58,9 @@ def auth_login_required(func):
             return  'Authorization1 Unauthorized',401
         else:
             pass
+        #app.logger.info('{0} {1} {2} {4}{5} {6}{7}'.format(au['username'],request.method,request.url,func.__name__,'*args:',args,'**kw:',kwargs))
+        print('{0} {1} {2} {4}{5} {6}{7}'.format(au['username'],request.method,request.url,func.__name__,'*args:',args,'**kw:',kwargs))
+
         return func(*args,**kwargs)
     return auth
 
