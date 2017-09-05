@@ -8,6 +8,15 @@ app_host = db.Table('cmdb_app_host',
     db.Column('host_id', db.Integer, db.ForeignKey('cmdb_asset.host_id'))
 )
 
+user_role = db.Table('user_roles',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('role_id', db.Integer, db.ForeignKey('roles.id'))
+)
+
+role_url = db.Table('role_urls',
+    db.Column('url_id', db.Integer, db.ForeignKey('urls.id')),
+    db.Column('role_id', db.Integer, db.ForeignKey('roles.id'))
+)
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -18,12 +27,23 @@ class User(db.Model):
     # role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
 
-# class Role(db.Model):
-#    __tablename__   = 'roles'
-#    id              = db.Column(db.Integer, primary_key=True)
-#    rolename        = db.Column(db.String(64))
-#    userid          = db.Column(db.Integer, db.ForeignKey('users.id'))
-#    role            = db.relationship('user', backref='roles', lazy='dynamic')
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id  = db.Column(db.Integer, primary_key=True)
+    rolename  = db.Column(db.String(64))
+    #userid  = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_role = db.relationship('User', secondary=user_role, backref=db.backref('roles', lazy='dynamic'))
+    role_url = db.relationship('Url', secondary=role_url, backref=db.backref('roles', lazy='dynamic'))
+
+
+class Url(db.Model):
+    __tablename__ = 'urls'
+    id  = db.Column(db.Integer, primary_key=True)
+    urlname  = db.Column(db.String(64))
+    urltype  = db.Column(db.String(64))  #menu  submenu or api
+    urlmenu  = db.Column(db.String(256))
+    method   = db.Column(db.String(64))
+    parentmenu = db.Column(db.Integer)
 
 
 class IDC(db.Model):
@@ -33,8 +53,6 @@ class IDC(db.Model):
     address = db.Column(db.String(50))
     contact = db.Column(db.String(30))
     phone = db.Column(db.String(30))
-
-
 
 
 class Asset(db.Model):
